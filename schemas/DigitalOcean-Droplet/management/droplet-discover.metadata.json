@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-droplet-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "optional"
+}

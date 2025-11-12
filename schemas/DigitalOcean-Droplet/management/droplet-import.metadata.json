@@ -1,5 +1,5 @@
 {
   "name": "droplet-import",
-  "displayName": "Import Empty Resource",
-  "description": "optional"
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single droplet from DigitalOcean using its resource ID"
 }

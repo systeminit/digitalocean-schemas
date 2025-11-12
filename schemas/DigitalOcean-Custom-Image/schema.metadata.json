@@ -1,6 +1,6 @@
 {
   "name": "DigitalOcean Custom Image",
-  "category": "Digital Ocean",
+  "category": "DigitalOcean",
   "description": "Custom virtual machine images that can be used to create Droplets. Images are created from URLs pointing to disk image files in various formats (raw, qcow2, vhdx, vdi, vmdk).",
   "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Images"
 }

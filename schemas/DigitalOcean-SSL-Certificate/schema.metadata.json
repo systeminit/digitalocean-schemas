@@ -1,6 +1,6 @@
 {
   "name": "DigitalOcean SSL Certificate",
-  "category": "Digital Ocean",
+  "category": "DigitalOcean",
   "description": "SSL/TLS certificates for securing web applications, supporting both Let's Encrypt automatic certificates and custom user-uploaded certificates",
   "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Certificates"
 }

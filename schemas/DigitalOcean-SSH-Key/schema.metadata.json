@@ -1,5 +1,6 @@
 {
   "name": "DigitalOcean SSH Key",
+  "category": "Digital Ocean",
   "description": "SSH keys are used to provide secure access to Droplets and other resources. They are embedded into the root user's authorized_keys file when included during resource creation.",
   "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/SSH-Keys"
 }

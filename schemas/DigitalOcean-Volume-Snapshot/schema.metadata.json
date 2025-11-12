@@ -1,5 +1,6 @@
 {
   "name": "DigitalOcean Volume Snapshot",
+  "category": "Digital Ocean",
   "description": "Point-in-time snapshots of DigitalOcean block storage volumes that can be used to create new volumes or as backups",
   "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Block-Storage"
 }

@@ -1,5 +1,6 @@
 {
   "name": "DigitalOcean Kubernetes Cluster",
+  "category": "Digital Ocean",
   "description": "Managed Kubernetes clusters with automated setup, scaling, and maintenance. Provides container orchestration with high availability options and auto-scaling node pools.",
   "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Kubernetes"
 }

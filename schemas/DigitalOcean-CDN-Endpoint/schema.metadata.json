@@ -1,5 +1,6 @@
 {
   "name": "DigitalOcean CDN Endpoint",
+  "category": "Digital Ocean",
   "description": "Content Delivery Network endpoints that accelerate the delivery of static assets from DigitalOcean Spaces",
   "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/CDN-Endpoints"
 }

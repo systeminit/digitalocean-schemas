@@ -96,8 +96,8 @@ async function main({
     // Convert the raw API response per droplet into SI components.
     let importCount = 0;
     for (const droplet of resourceList) {
-        const resourceId = droplet.name;
-        console.log(`importing droplet with resource ID ${resourceId} and droplet ID: ${droplet.id}`);
+        const resourceId = droplet.id.toString();
+        console.log(`importing droplet with resource ID ${resourceId}`);
 
         // Map API fields to domain properties
         const domainFields = mapApiFieldToDomain(droplet, fieldMappings);
@@ -128,7 +128,8 @@ async function main({
 
         const properties = {
             si: {
-                resourceId
+              resourceId,
+              name: droplet.name,
             },
             domain: domainFields,
             resource: droplet,

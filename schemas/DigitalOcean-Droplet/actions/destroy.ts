@@ -6,7 +6,7 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const resourceId = component.properties.resource.id;
+  const resourceId = component.properties.si.resourceId;
   if (!resourceId) {
     return {
       status: "error",

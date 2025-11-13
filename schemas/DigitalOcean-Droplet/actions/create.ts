@@ -23,6 +23,7 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
+  console.log("calling fetch");
   const response = await fetch("https://api.digitalocean.com/v2/droplets", {
     method: "POST",
     headers: {
@@ -31,6 +32,7 @@ async function main(component: Input): Promise<Output> {
     },
     body: codeString,
   });
+  console.log("called fetch");
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -40,20 +42,21 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
+  console.log("droplet created successfully");
   const responseJson = await response.json();
-  const dropletName = responseJson.droplet?.name;
+  console.log("getting id");
+  const dropletId = responseJson.droplet?.id;
 
-  console.log(responseJson.droplet);
-
-  if (dropletName) {
+  console.log("getting id");
+  if (dropletId) {
     return {
-      resourceId: dropletName,
+      resourceId: dropletId.toString(),
       status: "ok",
       payload: responseJson.droplet,
     };
   } else {
     return {
-      message: "Failed to extract droplet name from response",
+      message: "Failed to extract droplet id from response",
       status: "error",
     };
   }

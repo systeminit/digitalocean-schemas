@@ -1,6 +1,6 @@
 async function main(component: Input): Promise<Output> {
   // 1. Check if resource ID is provided
-  const resourceId = component.properties.resource?.id;
+  const resourceId = component.properties.si.resourceId;
   if (!resourceId) {
     return {
       status: "error",

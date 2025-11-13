@@ -43,6 +43,8 @@ async function main(component: Input): Promise<Output> {
   const responseJson = await response.json();
   const dropletName = responseJson.droplet?.name;
 
+  console.log(responseJson.droplet);
+
   if (dropletName) {
     return {
       resourceId: dropletName,

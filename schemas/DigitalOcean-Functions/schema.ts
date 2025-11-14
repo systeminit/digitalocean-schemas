@@ -7,7 +7,7 @@ function main() {
 
     // Namespace region property (required for namespace creation)
     const namespaceLabelProp = new PropBuilder()
-        .setName("namespace_label")
+        .setName("label")
         .setKind("string")
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
@@ -20,7 +20,7 @@ function main() {
 
     // Namespace region property
     const namespaceRegionProp = new PropBuilder()
-        .setName("namespace_region")
+        .setName("region")
         .setKind("string")
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
@@ -177,7 +177,7 @@ function main() {
                         .setKind("string")
                         .setWidget(new PropWidgetDefinitionBuilder()
                             .setKind("comboBox")
-                            .addOption("SCHEDULED", "Scheduled")
+                            .addOption("Scheduled", "SCHEDULED")
                             .build())
                         .setValidationFormat(Joi.string().valid("SCHEDULED").required())
                         .setDocumentation("One of different type of triggers. Currently only SCHEDULED is supported.")

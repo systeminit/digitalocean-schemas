@@ -1,0 +1,5 @@
+{
+  "name": "alert-policy-update",
+  "displayName": "Monitoring Alert Policy Update",
+  "description": "Update an existing monitoring alert policy"
+}

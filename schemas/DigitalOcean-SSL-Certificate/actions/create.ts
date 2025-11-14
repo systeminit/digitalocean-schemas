@@ -41,6 +41,7 @@ async function main(component: Input): Promise<Output> {
   }
 
   const responseJson = await response.json();
+  console.log(responseJson);
   const resourceId = responseJson.certificate?.id;
 
   if (resourceId) {

@@ -1,0 +1,5 @@
+{
+  "name": "field-validation",
+  "displayName": "Validate SSL Certificate Fields by Type",
+  "description": "Validates that the correct combination of fields is provided based on certificate type (Let's Encrypt vs Custom)"
+}

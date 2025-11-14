@@ -22,7 +22,11 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const response = await fetch(`https://api.digitalocean.com/v2/reserved_ips/${resourceId}`, {
+  const isIpv6 = component.properties.domain.ip_version === "ipv6";
+
+  const endpoint = isIpv6 ? "reserved_ipv6" : "reserved_ips";
+
+  const response = await fetch(`https://api.digitalocean.com/v2/${endpoint}/${resourceId}`, {
     method: "DELETE",
     headers: {
       "Authorization": `Bearer ${token}`,

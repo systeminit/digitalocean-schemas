@@ -214,7 +214,7 @@ function main() {
     // Create the asset
     const asset = new AssetBuilder()
         .addProp(nameProp)
-        .addProp(resourcesProp)
+        .addResourceProp(resourcesProp)
         .addSecretProp(DOCredentialSecretProp)
         .build();
 

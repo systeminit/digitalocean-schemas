@@ -12,31 +12,12 @@ function main() {
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("comboBox")
-            .addOption("ipv4", "IPv4 Reserved IP")
-            .addOption("ipv6", "IPv6 Reserved IP")
+            .addOption("IPv4", "ipv4")
+            .addOption("IPv6", "ipv6")
             .setCreateOnly()
             .build())
         .setValidationFormat(Joi.string().required().valid("ipv4", "ipv6"))
         .setDocumentation("The IP version to create - IPv4 or IPv6 reserved IP.")
-        .build();
-
-    // Type property - required to specify if assigning to droplet or reserving to region (IPv4 only)
-    const typeProp = new PropBuilder()
-        .setName("type")
-        .setKind("string")
-        .setHidden(false)
-        .setWidget(new PropWidgetDefinitionBuilder()
-            .setKind("comboBox")
-            .addOption("assign", "Assign to Droplet")
-            .addOption("reserve", "Reserve to Region")
-            .setCreateOnly()
-            .build())
-        .setValidationFormat(Joi.string().when('ip_version', {
-            is: 'ipv4',
-            then: Joi.required().valid("assign", "reserve"),
-            otherwise: Joi.forbidden()
-        }))
-        .setDocumentation("The type of reserved IP allocation - either assign to a specific droplet or reserve to a region for later assignment. Only applicable for IPv4 reserved IPs.")
         .build();
 
     // Droplet ID property - required when type is "assign" (IPv4 only)
@@ -48,15 +29,6 @@ function main() {
             .setKind("text")
             .setCreateOnly()
             .build())
-        .setValidationFormat(Joi.number().integer().min(1).when('ip_version', {
-            is: 'ipv4',
-            then: Joi.when('type', {
-                is: 'assign',
-                then: Joi.required(),
-                otherwise: Joi.forbidden()
-            }),
-            otherwise: Joi.forbidden()
-        }))
         .setDocumentation("The ID of the Droplet that the reserved IP will be assigned to. Required when type is 'assign' for IPv4 reserved IPs.")
         .build();
 
@@ -78,42 +50,7 @@ function main() {
             .addOption("Bangalore 1", "blr1")
             .setCreateOnly()
             .build())
-        .setValidationFormat(Joi.string().when('ip_version', {
-            is: 'ipv4',
-            then: Joi.when('type', {
-                is: 'reserve',
-                then: Joi.required(),
-                otherwise: Joi.forbidden()
-            }),
-            otherwise: Joi.required() // Always required for IPv6
-        }))
         .setDocumentation("The slug identifier for the region the reserved IP will be reserved to. Required when type is 'reserve' for IPv4, or always for IPv6 reserved IPs.")
-        .build();
-
-    // Region Slug property - used specifically for IPv6 API calls
-    const regionSlugProp = new PropBuilder()
-        .setName("region_slug")
-        .setKind("string")
-        .setHidden(false)
-        .setWidget(new PropWidgetDefinitionBuilder()
-            .setKind("comboBox")
-            .addOption("New York 1", "nyc1")
-            .addOption("New York 3", "nyc3")
-            .addOption("Amsterdam 3", "ams3")
-            .addOption("San Francisco 3", "sfo3")
-            .addOption("Singapore 1", "sgp1")
-            .addOption("London 1", "lon1")
-            .addOption("Frankfurt 1", "fra1")
-            .addOption("Toronto 1", "tor1")
-            .addOption("Bangalore 1", "blr1")
-            .setCreateOnly()
-            .build())
-        .setValidationFormat(Joi.string().when('ip_version', {
-            is: 'ipv6',
-            then: Joi.required(),
-            otherwise: Joi.forbidden()
-        }))
-        .setDocumentation("The slug identifier for the region the reserved IPv6 will be reserved to. Used for IPv6 API calls.")
         .build();
 
     // Project ID property - optional for IPv4 when reserving to region, not used for IPv6
@@ -125,46 +62,28 @@ function main() {
             .setKind("text")
             .setCreateOnly()
             .build())
-        .setValidationFormat(Joi.string().uuid().when('ip_version', {
-            is: 'ipv4',
-            then: Joi.when('type', {
-                is: 'reserve',
-                then: Joi.optional(),
-                otherwise: Joi.forbidden()
-            }),
-            otherwise: Joi.forbidden()
-        }))
         .setDocumentation("The UUID of the project to which the reserved IP will be assigned. Optional for IPv4 when reserving to region. If not specified, the reserved IP will be assigned to your default project.")
         .build();
 
-    // Tags property - array of strings for organizing resources (not mentioned in spec but common pattern)
-    const tagsProp = new PropBuilder()
-        .setName("tags")
-        .setKind("array")
-        .setHidden(false)
-        .setWidget(new PropWidgetDefinitionBuilder()
-            .setKind("array")
-            .build())
-        .setEntry(
-            new PropBuilder()
-                .setName("tags_item")
-                .setKind("string")
-                .setWidget(new PropWidgetDefinitionBuilder().setKind("text").build())
-                .build()
-        )
-        .setValidationFormat(Joi.array().items(Joi.string().max(255)).max(50))
-        .setDocumentation("An array of tags to apply to the reserved IP. Tag names can contain letters, numbers, colons, dashes, and underscores.")
-        .build();
+    const ipProp = new PropBuilder()
+      .setName("ip")
+      .setKind("string")
+      .setHidden(false)
+      .setWidget(new PropWidgetDefinitionBuilder()
+        .setKind("text")
+        .build())
+      .setDocumentation("The value of the reserved IP.")
+      .build();
+    // TODO add other resource props
 
     // Create the asset
     const asset = new AssetBuilder()
+        .addProp(dropletIdProp)
         .addProp(ipVersionProp)
-        .addProp(typeProp)
         .addProp(dropletIdProp)
         .addProp(regionProp)
-        .addProp(regionSlugProp)
         .addProp(projectIdProp)
-        .addProp(tagsProp)
+        .addResourceProp(ipProp)
         .addSecretProp(DOCredentialSecretProp)
         .build();
 

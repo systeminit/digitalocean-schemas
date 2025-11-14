@@ -7,6 +7,17 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
+  const ipVersion = component.properties.domain.ip_version;
+  if (component.properties.resource) {
+    return {
+      status: "error",
+      message: "Resource already exists",
+      payload: component.properties.resource,
+    };
+  }
+
+  const isIpv6 = ipVersion === "ipv6";
+
   const codeString = component.properties.code?.["doCreate"]?.code;
   if (!codeString) {
     return {
@@ -23,7 +34,9 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const response = await fetch("https://api.digitalocean.com/v2/reserved_ips", {
+  const endpoint = isIpv6 ? "reserved_ipv6" : "reserved_ips";
+
+  const response = await fetch(`https://api.digitalocean.com/v2/${endpoint}`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -41,13 +54,17 @@ async function main(component: Input): Promise<Output> {
   }
 
   const responseJson = await response.json();
-  const resourceId = responseJson.reserved_ip?.id;
+  console.log(responseJson);
+
+  const payload = isIpv6 ? responseJson.reserved_ipv6 : responseJson.reserved_ip;
+
+  const resourceId = payload?.ip;
 
   if (resourceId) {
     return {
       resourceId: resourceId.toString(),
       status: "ok",
-      payload: responseJson.reserved_ip,
+      payload: payload,
     };
   } else {
     return {

@@ -15,7 +15,11 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const response = await fetch(`https://api.digitalocean.com/v2/reserved_ips/${resourceId}`, {
+  const isIpv6 = component.properties.domain.ip_version === "ipv6";
+
+  const endpoint = isIpv6 ? "reserved_ipv6" : "reserved_ips";
+
+  const response = await fetch(`https://api.digitalocean.com/v2/${endpoint}/${resourceId}`, {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -39,11 +43,14 @@ async function main(component: Input): Promise<Output> {
   }
 
   const responseJson = await response.json();
+  console.log(responseJson);
 
-  if (responseJson.reserved_ip) {
+  const payload = isIpv6 ? responseJson.reserved_ipv6 : responseJson.reserved_ip;
+
+  if (payload) {
     return {
       status: "ok",
-      payload: responseJson.reserved_ip,
+      payload: payload,
     };
   } else {
     return {

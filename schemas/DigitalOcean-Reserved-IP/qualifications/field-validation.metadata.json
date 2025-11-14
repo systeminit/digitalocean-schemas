@@ -1,0 +1,5 @@
+{
+  "name": "field-validation",
+  "displayName": "Field Validation",
+  "description": "Validates that fields are correctly combined based on IP version"
+}

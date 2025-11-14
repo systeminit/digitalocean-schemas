@@ -23,7 +23,7 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const response = await fetch("https://api.digitalocean.com/v2/vpcs", {
+  const response = await fetch("https://api.digitalocean.com/v2/kubernetes/clusters", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -36,22 +36,22 @@ async function main(component: Input): Promise<Output> {
     const errorText = await response.text();
     return {
       status: "error",
-      message: `Unable to create vpc; API returned ${response.status} ${response.statusText}: ${errorText}`,
+      message: `Unable to create kubernetes_cluster; API returned ${response.status} ${response.statusText}: ${errorText}`,
     };
   }
 
   const responseJson = await response.json();
-  const resourceId = responseJson.vpc?.id;
+  const resourceId = responseJson.kubernetes_cluster?.id;
 
   if (resourceId) {
     return {
       resourceId: resourceId.toString(),
       status: "ok",
-      payload: responseJson.vpc,
+      payload: responseJson.kubernetes_cluster,
     };
   } else {
     return {
-      message: "Failed to extract vpc id from response",
+      message: "Failed to extract kubernetes_cluster id from response",
       status: "error",
     };
   }

@@ -23,7 +23,7 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const response = await fetch("https://api.digitalocean.com/v2/vpcs", {
+  const response = await fetch("https://api.digitalocean.com/v2/apps", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -36,22 +36,22 @@ async function main(component: Input): Promise<Output> {
     const errorText = await response.text();
     return {
       status: "error",
-      message: `Unable to create vpc; API returned ${response.status} ${response.statusText}: ${errorText}`,
+      message: `Unable to create app; API returned ${response.status} ${response.statusText}: ${errorText}`,
     };
   }
 
   const responseJson = await response.json();
-  const resourceId = responseJson.vpc?.id;
+  const appId = responseJson.app?.id;
 
-  if (resourceId) {
+  if (appId) {
     return {
-      resourceId: resourceId.toString(),
+      resourceId: appId.toString(),
       status: "ok",
-      payload: responseJson.vpc,
+      payload: responseJson.app,
     };
   } else {
     return {
-      message: "Failed to extract vpc id from response",
+      message: "Failed to extract app id from response",
       status: "error",
     };
   }

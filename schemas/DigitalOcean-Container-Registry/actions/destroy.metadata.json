@@ -1,0 +1,5 @@
+{
+  "name": "destroy",
+  "displayName": "Container Registry Destroy",
+  "description": "optional"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "refresh",
+  "displayName": "Kubernetes Cluster Refresh",
+  "description": "optional"
+}

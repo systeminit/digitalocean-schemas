@@ -4,6 +4,8 @@ You are an expert code generator that creates CRUD (Create, Read, Update, Delete
 
 ## Context
 You will be provided with a schema definition for a DigitalOcean resource (starting with droplets). Based on this schema, you need to generate the four fundamental CRUD operations that follow the established patterns in the codebase.
+There's already a reference implementation for droplet on the schemas folder. Do not modify those actions. 
+You should add actions to all the other schemas in the schemas folder. The actions should be on an `actions` subfolder of each schema.
 
 ## Function File Naming Convention
 
@@ -15,11 +17,12 @@ The `normalizeFsName` function replaces any character that isn't alphanumeric (A
 1. The `name` property in each function's `.metadata.json` file is the source of truth
 2. The filename prefix is `normalizeFsName(metadata.name)`
 3. Both the `.metadata.json` and `.ts` files share the same normalized prefix
+4. the action functions must be called the same as their "kind" (create, refresh, destroy).
+5. The action `displayNames` must be more descriptive. so the create action for sshkey should have the display name `SSH Key Create` instead of `Create`. 
 
 ### Examples:
-- If `name: "droplet-create"` → files: `droplet-create.metadata.json`, `droplet-create.ts`
-- If `name: "app create"` → files: `app-create.metadata.json`, `app-create.ts`
-- If `name: "sshkey-refresh"` → files: `sshkey-refresh.metadata.json`, `sshkey-refresh.ts`
+- If `name: "create"` → files: `create.metadata.json`, `create.ts`
+- If `name: "refresh"` → files: `refresh.metadata.json`, `refresh.ts`
 - If `name: "Fields Are Valid"` → files: `Fields-Are-Valid.metadata.json`, `Fields-Are-Valid.ts`
 
 **Note**: Spaces, special characters, and any non-alphanumeric characters (except `.`, `_`, `-`) are replaced with hyphens.
@@ -27,8 +30,12 @@ The `normalizeFsName` function replaces any character that isn't alphanumeric (A
 ## Reference Implementation Pattern
 Use this reference create function for the overall structure and error handling patterns:
 
+## Create Operation Reference Pattern
+
 ```typescript
 async function main(component: Input): Promise<Output> {
+  const entityDoPath = "droplets";
+  const entityName = "droplet";
   // 1. Check if resource already exists
   if (component.properties.resource?.payload) {
     return {
@@ -51,13 +58,13 @@ async function main(component: Input): Promise<Output> {
   const token = requestStorage.getEnv("DO_API_TOKEN");
   if (!token) {
     return {
-      status: "error", 
+      status: "error",
       message: "DO_API_TOKEN not found (hint: you may need a secret)",
     };
   }
 
   // 4. Execute DigitalOcean REST API call
-  const response = await fetch("https://api.digitalocean.com/v2/droplets", {
+  const response = await fetch(`https://api.digitalocean.com/v2/${entityDoPath}`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -71,18 +78,18 @@ async function main(component: Input): Promise<Output> {
     const errorText = await response.text();
     return {
       status: "error",
-      message: `Unable to create droplet; API returned ${response.status} ${response.statusText}: ${errorText}`,
+      message: `Unable to create ${entityName}; API returned ${response.status} ${response.statusText}: ${errorText}`,
     };
   }
 
   // 6. Parse response and extract resource ID  
   const responseJson = await response.json();
-  const dropletName = responseJson.droplet?.name;
+  const dropletId = responseJson.droplet?.id;
 
   // 7. Return success result
-  if (dropletName) {
+  if (dropletId) {
     return {
-      resourceId: dropletName,
+      resourceId: dropletId.toString(),
       status: "ok",
       payload: responseJson.droplet,
     };
@@ -99,6 +106,9 @@ async function main(component: Input): Promise<Output> {
 
 ```typescript
 async function main(component: Input): Promise<Output> {
+  const entityDoPath = "droplets";
+  const entityName = "droplet";
+
   // 1. Check if resource exists
   if (!component.properties.resource) {
     return {
@@ -108,7 +118,7 @@ async function main(component: Input): Promise<Output> {
   }
 
   // 2. Extract resource ID
-  const resourceId = component.properties.resource.id;
+  const resourceId = component.properties.si.resourceId;
   if (!resourceId) {
     return {
       status: "error",
@@ -126,7 +136,7 @@ async function main(component: Input): Promise<Output> {
   }
 
   // 4. Execute delete API call
-  const response = await fetch(`https://api.digitalocean.com/v2/droplets/${resourceId}`, {
+  const response = await fetch(`https://api.digitalocean.com/v2/${entityDoPath}/${resourceId}`, {
     method: "DELETE",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -139,7 +149,7 @@ async function main(component: Input): Promise<Output> {
     const errorText = await response.text();
     return {
       status: "error",
-      message: `Unable to delete droplet; API returned ${response.status} ${response.statusText}: ${errorText}`,
+      message: `Unable to delete ${entityName}; API returned ${response.status} ${response.statusText}: ${errorText}`,
     };
   }
 
@@ -147,6 +157,75 @@ async function main(component: Input): Promise<Output> {
   return {
     status: "ok",
   };
+}
+```
+
+
+## Read Operation Reference Pattern
+
+```typescript
+async function main(component: Input): Promise<Output> {
+  const entityDoPath = "droplets";
+  const entityName = "droplet";
+
+  // 1. Check if resource ID is provided
+  const resourceId = component.properties.si.resourceId;
+  if (!resourceId) {
+    return {
+      status: "error",
+      message: "Resource ID not found",
+    };
+  }
+
+  // 2. Get API token for authentication
+  const token = requestStorage.getEnv("DO_API_TOKEN");
+  if (!token) {
+    return {
+      status: "error",
+      message: "DO_API_TOKEN not found (hint: you may need a secret)",
+    };
+  }
+
+  // 3. Execute DigitalOcean REST API call to fetch droplet
+  const response = await fetch(`https://api.digitalocean.com/v2/${entityDoPath}/${resourceId}`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  // 4. Handle 404 not found cases gracefully
+  if (response.status === 404) {
+    return {
+      status: "error",
+      message: `Droplet with ID ${resourceId} not found`,
+    };
+  }
+
+  // 5. Handle other errors
+  if (!response.ok) {
+    const errorText = await response.text();
+    return {
+      status: "error",
+      message: `Unable to read ${entityName}; API returned ${response.status} ${response.statusText}: ${errorText}`,
+    };
+  }
+
+  // 6. Parse response and return droplet data
+  const responseJson = await response.json();
+
+  if (responseJson.droplet) {
+    return {
+      status: "ok",
+      payload: responseJson.droplet,
+    };
+  } else {
+    return {
+      status: "error",
+      message: "Failed to extract droplet data from response",
+    };
+  }
 }
 ```
 
@@ -158,15 +237,17 @@ async function main(component: Input): Promise<Output> {
 - Handle authentication/secrets properly
 - Execute create API call using appropriate CLI or SDK
 - Handle async operations with polling if needed
-- Return resource name as resourceId, status, and full droplet payload
+- Return resource id as resourceId, status, and full droplet payload
 
-### 2. Read Operation  
+### 2. Read Operation
 - Accept droplet ID
 - Use `GET https://api.digitalocean.com/v2/droplets/{id}` to fetch current state
 - Return structured droplet data from response.droplet
 - Handle 404 not found cases gracefully
+- the read operation files should be called `refresh.ts` and `refresh.metadata.json`
 
 ### 3. Update Operation
+- Not all resources will have an update operation. Check the digital ocean schema to see if it has a PUT endpoint.
 - Accept droplet ID and update payload
 - Use appropriate DigitalOcean API endpoints (resize: `POST /droplets/{id}/actions`, rename: `PUT /droplets/{id}`)
 - Handle partial updates and action-based operations
@@ -178,6 +259,7 @@ async function main(component: Input): Promise<Output> {
 - Use `DELETE https://api.digitalocean.com/v2/droplets/{id}`
 - Handle 204 No Content success response  
 - Return deletion status only (no payload needed)
+- The delete operation files should be called `destroy.ts` and `destroy.metadata.json`
 
 ## Output Format
 For each CRUD operation, generate:
@@ -287,6 +369,7 @@ The `doCreate` function should follow the same pattern shown above, with these D
 - **Required fields** - Ensure `name`, `region`, `size`, and `image` are always present
 - **Authentication** - Handle DO API tokens through the secrets mechanism
 - **Resource types** - Adapt interface for different DO resources (droplets, load balancers, databases, etc.)
+- The file names for the code generation function should be `doCreate.ts` and `doCreate.metadata.json`
 
 ### REST API Integration:
 - Use direct HTTP calls to DigitalOcean API v2 endpoints

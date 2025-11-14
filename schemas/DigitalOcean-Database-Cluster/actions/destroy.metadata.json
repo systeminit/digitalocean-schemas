@@ -1,0 +1,5 @@
+{
+  "name": "destroy",
+  "displayName": "Database Cluster Destroy",
+  "description": "optional"
+}

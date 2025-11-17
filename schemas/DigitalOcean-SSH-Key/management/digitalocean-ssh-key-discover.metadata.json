@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-ssh-key-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all SSH keys from DigitalOcean"
+}

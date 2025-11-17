@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-vpc-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all VPCs from DigitalOcean"
+}

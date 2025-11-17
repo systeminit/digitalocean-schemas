@@ -1,0 +1,5 @@
+{
+  "name": "floating-ip-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single floating IP from DigitalOcean using its resource ID"
+}

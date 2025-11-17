@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-volume-snapshot-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all volume snapshots from DigitalOcean"
+}

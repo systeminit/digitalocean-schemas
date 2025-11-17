@@ -1,0 +1,5 @@
+{
+  "name": "ssl-certificate-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single SSL certificate from DigitalOcean using its resource ID"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-database-cluster-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all database clusters from DigitalOcean"
+}

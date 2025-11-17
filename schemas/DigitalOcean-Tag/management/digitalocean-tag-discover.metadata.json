@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-tag-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all tags from DigitalOcean"
+}

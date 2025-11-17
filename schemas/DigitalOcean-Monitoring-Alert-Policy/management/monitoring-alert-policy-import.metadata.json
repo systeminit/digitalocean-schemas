@@ -1,0 +1,5 @@
+{
+  "name": "monitoring-alert-policy-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single monitoring alert policy from DigitalOcean using its resource ID"
+}

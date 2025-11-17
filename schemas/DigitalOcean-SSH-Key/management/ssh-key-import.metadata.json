@@ -1,0 +1,5 @@
+{
+  "name": "ssh-key-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single SSH key from DigitalOcean using its resource ID"
+}

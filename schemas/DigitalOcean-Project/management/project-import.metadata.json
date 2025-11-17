@@ -1,0 +1,5 @@
+{
+  "name": "project-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single project from DigitalOcean using its resource ID"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-reserved-ip-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all reserved IPs from DigitalOcean"
+}

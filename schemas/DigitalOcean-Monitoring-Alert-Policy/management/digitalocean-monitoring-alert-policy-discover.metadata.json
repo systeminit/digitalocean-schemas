@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-monitoring-alert-policy-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all monitoring alert policies from DigitalOcean"
+}

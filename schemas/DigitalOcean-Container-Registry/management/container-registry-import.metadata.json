@@ -1,0 +1,5 @@
+{
+  "name": "container-registry-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single container registry from DigitalOcean using its resource ID"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-volume-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all volumes from DigitalOcean"
+}

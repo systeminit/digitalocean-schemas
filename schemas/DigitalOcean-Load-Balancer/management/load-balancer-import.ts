@@ -53,6 +53,7 @@ async function main({
     algorithm: 'algorithm',
     vpc_uuid: 'vpc_uuid',
     droplet_ids: 'droplet_ids',
+    forwarding_rules: 'forwarding_rules',
     tag: 'tag',
   };
 

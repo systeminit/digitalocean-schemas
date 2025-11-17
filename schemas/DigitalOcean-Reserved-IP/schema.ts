@@ -78,7 +78,6 @@ function main() {
 
     // Create the asset
     const asset = new AssetBuilder()
-        .addProp(dropletIdProp)
         .addProp(ipVersionProp)
         .addProp(dropletIdProp)
         .addProp(regionProp)

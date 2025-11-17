@@ -1,9 +1,10 @@
 async function main(component: Input): Promise < Output > {
-    if (component.properties.resource) {
+    const existingPayload = component.properties.resource?.payload;
+    if (existingPayload) {
         return {
             status: "error",
             message: "Resource already exists",
-            payload: component.properties.resource,
+            payload: existingPayload,
         };
     }
 

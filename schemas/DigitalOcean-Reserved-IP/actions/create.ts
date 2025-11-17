@@ -1,20 +1,14 @@
 async function main(component: Input): Promise<Output> {
-  if (component.properties.resource) {
+  const existingPayload = component.properties.resource?.payload;
+  if (existingPayload) {
     return {
       status: "error",
       message: "Resource already exists",
-      payload: component.properties.resource,
+      payload: existingPayload,
     };
   }
 
   const ipVersion = component.properties.domain.ip_version;
-  if (component.properties.resource) {
-    return {
-      status: "error",
-      message: "Resource already exists",
-      payload: component.properties.resource,
-    };
-  }
 
   const isIpv6 = ipVersion === "ipv6";
 

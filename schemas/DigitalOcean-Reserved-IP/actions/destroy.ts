@@ -44,5 +44,6 @@ async function main(component: Input): Promise<Output> {
 
   return {
     status: "ok",
+    payload: null,
   };
 }

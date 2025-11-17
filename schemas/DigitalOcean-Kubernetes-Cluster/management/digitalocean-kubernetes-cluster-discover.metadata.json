@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-kubernetes-cluster-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all Kubernetes clusters from DigitalOcean"
+}

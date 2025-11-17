@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-cdn-endpoint-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all CDN endpoints from DigitalOcean"
+}

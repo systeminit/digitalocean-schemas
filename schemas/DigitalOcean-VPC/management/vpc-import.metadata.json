@@ -1,0 +1,5 @@
+{
+  "name": "vpc-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single VPC from DigitalOcean using its resource ID"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "custom-image-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single custom image from DigitalOcean using its resource ID"
+}

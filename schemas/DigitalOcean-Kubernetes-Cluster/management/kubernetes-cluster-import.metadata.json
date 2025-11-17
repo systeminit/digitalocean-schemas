@@ -1,0 +1,5 @@
+{
+  "name": "kubernetes-cluster-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single Kubernetes cluster from DigitalOcean using its resource ID"
+}

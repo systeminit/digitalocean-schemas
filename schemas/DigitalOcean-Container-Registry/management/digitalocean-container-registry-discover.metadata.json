@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-container-registry-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all container registries from DigitalOcean"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "load-balancer-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single load balancer from DigitalOcean using its resource ID"
+}

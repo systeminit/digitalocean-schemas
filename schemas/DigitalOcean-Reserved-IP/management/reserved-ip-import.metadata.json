@@ -1,0 +1,5 @@
+{
+  "name": "reserved-ip-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single reserved IP from DigitalOcean using its resource ID"
+}

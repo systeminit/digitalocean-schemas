@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-domain-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all domains from DigitalOcean"
+}

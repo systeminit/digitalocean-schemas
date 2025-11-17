@@ -1,0 +1,5 @@
+{
+  "name": "app-platform-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single app from DigitalOcean using its resource ID"
+}

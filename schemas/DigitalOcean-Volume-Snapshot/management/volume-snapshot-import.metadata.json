@@ -1,0 +1,5 @@
+{
+  "name": "volume-snapshot-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single volume snapshot from DigitalOcean using its resource ID"
+}

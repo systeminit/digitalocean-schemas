@@ -1,0 +1,5 @@
+{
+  "name": "digitalocean-floating-ip-discover",
+  "displayName": "Discover from DigitalOcean",
+  "description": "Discover all floating IPs from DigitalOcean"
+}

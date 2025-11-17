@@ -1,0 +1,5 @@
+{
+  "name": "database-cluster-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single database cluster from DigitalOcean using its resource ID"
+}

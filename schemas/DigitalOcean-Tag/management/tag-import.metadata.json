@@ -1,0 +1,5 @@
+{
+  "name": "tag-import",
+  "displayName": "Import from DigitalOcean",
+  "description": "Import a single tag from DigitalOcean using its resource ID"
+}

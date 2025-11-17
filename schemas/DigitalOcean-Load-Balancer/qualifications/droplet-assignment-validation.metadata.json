@@ -1,0 +1,5 @@
+{
+  "name": "droplet-assignment-validation",
+  "displayName": "Validate Droplet Assignment",
+  "description": "Ensures droplet_ids and tag are mutually exclusive and at least one is provided"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "deprecated-fields-validation",
+  "displayName": "Validate Deprecated Fields",
+  "description": "Ensures deprecated 'size' field is only used in AMS2, NYC2, or SFO1 regions, and warns about deprecated 'algorithm' field"
+}

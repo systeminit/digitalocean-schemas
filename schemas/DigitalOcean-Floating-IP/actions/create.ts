@@ -42,7 +42,7 @@ async function main(component: Input): Promise<Output> {
   }
 
   const responseJson = await response.json();
-  const resourceId = responseJson.floating_ip?.id;
+  const resourceId = responseJson.floating_ip?.ip;
 
   if (resourceId) {
     return {

@@ -91,8 +91,9 @@ async function main({
 
         // Map API fields to domain properties
         const domainFields = mapApiFieldToDomain(floatingIp, fieldMappings);
+        domainFields['type'] = domainFields['region'] ? 'reserve' : 'assign';
 
-        const properties = {
+      const properties = {
             si: {
               resourceId,
               name: floatingIp.ip,

@@ -1,0 +1,5 @@
+{
+  "name": "field-compatibility-validation",
+  "displayName": "Field Compatibility Validation",
+  "description": "Ensures droplet_id and region are properly set based on the type (assign or reserve)"
+}

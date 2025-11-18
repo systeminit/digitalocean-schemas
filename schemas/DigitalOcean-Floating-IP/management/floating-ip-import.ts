@@ -73,6 +73,8 @@ async function main({
 
   const domainFields = mapApiFieldToDomain(floatingIp, fieldMappings);
 
+  domainFields['type'] = domainFields['region'] ? 'reserve' : 'assign';
+
   console.log("floating IP imported and attributes prepared for component creation");
 
   const ops = {

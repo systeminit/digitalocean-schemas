@@ -12,8 +12,8 @@ function main() {
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("comboBox")
-            .addOption("assign", "Assign to Droplet")
-            .addOption("reserve", "Reserve to Region")
+            .addOption("Assign to Droplet", "assign")
+            .addOption("Reserve to Region", "reserve")
             .setCreateOnly()
             .build())
         .setValidationFormat(Joi.string().required().valid("assign", "reserve"))
@@ -23,17 +23,13 @@ function main() {
     // Droplet ID property - required when type is "assign"
     const dropletIdProp = new PropBuilder()
         .setName("droplet_id")
-        .setKind("float")
+        .setKind("integer")
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("text")
             .setCreateOnly()
             .build())
-        .setValidationFormat(Joi.number().integer().min(1).when('type', {
-            is: 'assign',
-            then: Joi.required(),
-            otherwise: Joi.forbidden()
-        }))
+        .setValidationFormat(Joi.number().integer().min(1))
         .setDocumentation("The ID of the Droplet that the floating IP will be assigned to. Required when type is 'assign'.")
         .build();
 
@@ -55,11 +51,6 @@ function main() {
             .addOption("Bangalore 1", "blr1")
             .setCreateOnly()
             .build())
-        .setValidationFormat(Joi.string().when('type', {
-            is: 'reserve',
-            then: Joi.required(),
-            otherwise: Joi.forbidden()
-        }))
         .setDocumentation("The slug identifier for the region the floating IP will be reserved to. Required when type is 'reserve'.")
         .build();
 
@@ -91,7 +82,6 @@ function main() {
                 .setWidget(new PropWidgetDefinitionBuilder().setKind("text").build())
                 .build()
         )
-        .setValidationFormat(Joi.array().items(Joi.string().max(255)).max(50))
         .setDocumentation("An array of tags to apply to the floating IP. Tag names can contain letters, numbers, colons, dashes, and underscores.")
         .build();
 

@@ -13,7 +13,24 @@ async function main({
     };
   }
 
-  const response = await fetch(`https://api.digitalocean.com/v2/reserved_ips/${resourceId}`, {
+  const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  const ipv6Regex = /^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$/;
+  let isIpv6: boolean;
+
+  if (ipv4Regex.test(resourceId)) {
+    isIpv6 = false;
+  } else if (ipv6Regex.test(resourceId)) {
+    isIpv6 = true;
+  } else {
+    return {
+      status: "error",
+      message: `Invalid IP address format: ${resourceId}. Must be a valid IPv4 or IPv6 address.`,
+    };
+  }
+
+  const endpoint = isIpv6 ? "reserved_ipv6" : "reserved_ips";
+
+  const response = await fetch(`https://api.digitalocean.com/v2/${endpoint}/${resourceId}`, {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -37,7 +54,15 @@ async function main({
   }
 
   const responseJson = await response.json();
-  const reservedIp = responseJson.reserved_ip;
+
+  let reservedIp;
+  if (isIpv6) {
+    reservedIp = responseJson.reserved_ipv6;
+  } else {
+    reservedIp = responseJson.reserved_ip;
+    reservedIp.region_slug = reservedIp.region.slug;
+  }
+
   if (!reservedIp) {
     return {
       status: "error",
@@ -47,7 +72,7 @@ async function main({
 
   // Map API fields to domain properties
   const fieldMappings = {
-    region: 'region.slug',
+    region: 'region_slug',
     droplet_id: 'droplet.id',
   };
 
@@ -72,6 +97,12 @@ async function main({
   }
 
   const domainFields = mapApiFieldToDomain(reservedIp, fieldMappings);
+
+  if (isIpv6) {
+    domainFields['ip_version'] = 'ipv6';
+  } else {
+    domainFields['ip_version'] = 'ipv4';
+  }
 
   console.log("reserved IP imported and attributes prepared for component creation");
 

@@ -40,7 +40,34 @@ async function main({
 
             if (Array.isArray(listResponse?.reserved_ips) && listResponse.reserved_ips.length > 0) {
                 console.log(`found ${listResponse.reserved_ips.length} reserved IPs on page ${page}`);
-                resourceList = _.union(resourceList, listResponse.reserved_ips);
+                const ips = listResponse.reserved_ips.map(ip => ({
+                  ...ip,
+                  region_slug: ip.region.slug,
+                  ip_version: "ipv4"
+                }));
+                resourceList = _.union(resourceList, ips);
+            }
+
+            hasNextPage = Boolean(listResponse?.links?.pages?.next);
+            if (hasNextPage) page++;
+        }
+
+        // Now load ipv6
+        page = 1;
+        hasNextPage = true;
+        while (hasNextPage) {
+            console.log(`fetching reserved IPv6 page ${page} (max ${perPage} per page)`);
+            const listResponse = await doApiFetch(`/reserved_ipv6?per_page=${perPage}&page=${page}`);
+
+            if (Array.isArray(listResponse?.reserved_ipv6s) && listResponse.reserved_ipv6s.length > 0) {
+                console.log(`found ${listResponse.reserved_ipv6s.length} reserved IPs on page ${page}`);
+
+                const ips = listResponse.reserved_ipv6s.map((ip) => ({
+                  ...ip,
+                  ip_version: "ipv6"
+                }));
+
+              resourceList = _.union(resourceList, ips);
             }
 
             hasNextPage = Boolean(listResponse?.links?.pages?.next);
@@ -79,8 +106,9 @@ async function main({
 
     // Field mappings from API response to domain properties
     const fieldMappings = {
-        region: 'region.slug',
+        region: 'region_slug',
         droplet_id: 'droplet.id',
+        ip_version: 'ip_version',
     };
 
     // Convert the raw API response per reserved IP into SI components.

@@ -46,34 +46,15 @@ async function main({
   }
 
   // Map API fields to domain properties
-  const fieldMappings = {
-    name: 'spec.name',
-    region: 'region.slug',
+  const domainFields = {
+    project_id: app.owner_uuid,
+    spec: {
+      name: app.spec?.name,
+      region: app.region?.slug || app.spec?.region,
+    }
   };
 
-  function getNestedValue(obj, path) {
-    if (typeof path === 'string') {
-      return path.split('.').reduce((current, key) => current?.[key], obj);
-    }
-    return obj?.[path];
-  }
-
-  function mapApiFieldToDomain(apiData, fieldMappings) {
-    const domainData = {};
-
-    for (const [domainField, apiPath] of Object.entries(fieldMappings)) {
-      const value = getNestedValue(apiData, apiPath);
-      if (value !== undefined && value !== null) {
-        domainData[domainField] = value;
-      }
-    }
-
-    return domainData;
-  }
-
-  const domainFields = mapApiFieldToDomain(app, fieldMappings);
-
-  console.log("app imported and attributes prepared for component creation");
+  console.log("app imported and attributes prepared for component creation with domain fields extracted", domainFields);
 
   const ops = {
     update: {

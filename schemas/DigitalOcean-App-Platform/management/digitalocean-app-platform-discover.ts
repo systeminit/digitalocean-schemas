@@ -55,42 +55,18 @@ async function main({
 
     console.log(`total apps collected: ${resourceList.length}`);
 
-    // Generic field mapping function
-    function mapApiFieldToDomain(apiData, fieldMappings) {
-        const domainData = {};
-
-        for (const [domainField, apiPath] of Object.entries(fieldMappings)) {
-            const value = getNestedValue(apiData, apiPath);
-            if (value !== undefined && value !== null) {
-                domainData[domainField] = value;
-            }
-        }
-
-        return domainData;
-    }
-
-    // Helper to get nested values from API response
-    function getNestedValue(obj, path) {
-        if (typeof path === 'string') {
-            return path.split('.').reduce((current, key) => current?.[key], obj);
-        }
-        return obj?.[path];
-    }
-
-    // Field mappings from API response to domain properties
-    const fieldMappings = {
-        name: 'spec.name',
-        region: 'region.slug',
-    };
-
     // Convert the raw API response per app into SI components.
     let importCount = 0;
     for (const app of resourceList) {
         const resourceId = app.id.toString();
-        console.log(`importing app with resource ID ${resourceId}`);
-
-        // Map API fields to domain properties
-        const domainFields = mapApiFieldToDomain(app, fieldMappings);
+        const domainFields = {
+            project_id: app.owner_uuid,
+            spec: {
+                name: app.spec?.name,
+                region: app.region?.slug || app.spec?.region,
+            }
+        };
+        console.log(`importing app with resource ID ${resourceId}`, app, domainFields);
 
         const properties = {
             si: {

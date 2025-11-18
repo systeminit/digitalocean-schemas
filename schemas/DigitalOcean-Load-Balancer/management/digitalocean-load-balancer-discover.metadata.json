@@ -1,5 +1,5 @@
 {
   "name": "digitalocean-load-balancer-discover",
-  "displayName": "Discover on DigitalOcean",
+  "displayName": "Discover from DigitalOcean",
   "description": "Discover all load balancers from DigitalOcean"
 }

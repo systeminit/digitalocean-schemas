@@ -66,20 +66,6 @@ function main() {
         .setDocumentation("This field has been replaced by the `size_unit` field for all regions except in AMS2, NYC2, and SFO1. Each available load balancer size now equates to the load balancer having a set number of nodes. * `lb-small` = 1 node * `lb-medium` = 3 nodes * `lb-large` = 6 nodes You can resize load balancers after creation up to once per hour. You cannot resize a load balancer within the first hour of its creation.")
         .build();
 
-    // Algorithm property (deprecated)
-    const algorithmProp = new PropBuilder()
-        .setName("algorithm")
-        .setKind("string")
-        .setHidden(false)
-        .setWidget(new PropWidgetDefinitionBuilder()
-            .setKind("comboBox")
-            .addOption("Round Robin", "round_robin")
-            .addOption("Least Connections", "least_connections")
-            .build())
-        .setValidationFormat(Joi.string().valid("round_robin", "least_connections").default("round_robin"))
-        .setDocumentation("This field has been deprecated. You can no longer specify an algorithm for load balancers.")
-        .build();
-
     // Project ID property
     const projectIdProp = new PropBuilder()
         .setName("project_id")
@@ -102,10 +88,9 @@ function main() {
             .build())
         .setEntry(
             new PropBuilder()
-                .setName("droplet_id")
-                .setKind("float")
+                .setName("droplet_ids_item")
+                .setKind("string")
                 .setWidget(new PropWidgetDefinitionBuilder().setKind("text").build())
-                .setValidationFormat(Joi.number().integer())
                 .setDocumentation("Droplet ID")
                 .build()
         )
@@ -490,7 +475,6 @@ function main() {
         .addProp(regionProp)
         .addProp(sizeUnitProp)
         .addProp(sizeProp)
-        .addProp(algorithmProp)
         .addProp(projectIdProp)
         .addProp(dropletIdsProp)
         .addProp(tagProp)

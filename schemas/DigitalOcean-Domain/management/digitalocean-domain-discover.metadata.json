@@ -1,5 +1,5 @@
 {
   "name": "digitalocean-domain-discover",
-  "displayName": "Discover from DigitalOcean",
+  "displayName": "Discover on DigitalOcean",
   "description": "Discover all domains from DigitalOcean"
 }

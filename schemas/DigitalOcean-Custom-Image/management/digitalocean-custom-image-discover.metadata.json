@@ -1,5 +1,5 @@
 {
   "name": "digitalocean-custom-image-discover",
-  "displayName": "Discover from DigitalOcean",
+  "displayName": "Discover on DigitalOcean",
   "description": "Discover all custom images from DigitalOcean"
 }

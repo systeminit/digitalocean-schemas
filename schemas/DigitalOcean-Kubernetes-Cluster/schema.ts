@@ -60,12 +60,12 @@ function main() {
 
     // Node pools array (required)
     const nodePoolsProp = new PropBuilder()
+        .setName("node_pools")
         .setKind("array")
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("array")
             .build())
-        .setValidationFormat(Joi.array().min(1).required())
         .setDocumentation("An object specifying the details of the worker nodes available to the Kubernetes cluster.")
         .setEntry(
             new PropBuilder()

@@ -25,9 +25,9 @@ function main() {
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("comboBox")
-            .addOption("starter", "Starter - 500MB storage, 500MB transfer")
-            .addOption("basic", "Basic - 5GB storage, 5GB transfer")
-            .addOption("professional", "Professional - 100GB storage, 100GB transfer")
+            .addOption("Starter - 500MB storage, 500MB transfer", "starter")
+            .addOption("Basic - 5GB storage, 5GB transfer", "basic")
+            .addOption("Professional - 100GB storage, 100GB transfer", "professional")
             .setCreateOnly()
             .build())
         .setValidationFormat(Joi.string().required().valid("starter", "basic", "professional"))
@@ -44,6 +44,7 @@ function main() {
             .addOption("New York 1", "nyc1")
             .addOption("New York 3", "nyc3")
             .addOption("Amsterdam 3", "ams3")
+            .addOption("San Francisco 2", "sfo2")
             .addOption("San Francisco 3", "sfo3")
             .addOption("Singapore 1", "sgp1")
             .addOption("London 1", "lon1")
@@ -56,11 +57,44 @@ function main() {
         .setDocumentation("Slug of the region where registry data is stored. When not provided, a region will be selected.")
         .build();
 
-    // Create the asset
+    const createdAtProp = new PropBuilder()
+      .setName("created_at")
+      .setKind("string")
+      .setHidden(false)
+      .setWidget(new PropWidgetDefinitionBuilder()
+        .setKind("text")
+        .setCreateOnly()
+        .build())
+      .build();
+
+    const storageUsageProp = new PropBuilder()
+      .setName("storage_usage_bytes")
+      .setKind("integer")
+      .setHidden(false)
+      .setWidget(new PropWidgetDefinitionBuilder()
+        .setKind("text")
+        .setCreateOnly()
+        .build())
+      .build();
+
+    const storageUsageUpdatedProp = new PropBuilder()
+      .setName("storage_usage_updated_at")
+      .setKind("string")
+      .setHidden(false)
+      .setWidget(new PropWidgetDefinitionBuilder()
+        .setKind("text")
+        .setCreateOnly()
+        .build())
+      .build();
+
+  // Create the asset
     const asset = new AssetBuilder()
         .addProp(nameProp)
         .addProp(subscriptionTierSlugProp)
         .addProp(regionProp)
+        .addResourceProp(createdAtProp)
+        .addResourceProp(storageUsageProp)
+        .addResourceProp(storageUsageUpdatedProp)
         .addSecretProp(DOCredentialSecretProp)
         .build();
 

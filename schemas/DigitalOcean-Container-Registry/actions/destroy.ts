@@ -22,7 +22,7 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const response = await fetch(`https://api.digitalocean.com/v2/registry/${resourceId}`, {
+  const response = await fetch(`https://api.digitalocean.com/v2/registries/${resourceId}`, {
     method: "DELETE",
     headers: {
       "Authorization": `Bearer ${token}`,

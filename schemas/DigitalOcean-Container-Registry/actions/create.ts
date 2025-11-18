@@ -42,7 +42,7 @@ async function main(component: Input): Promise<Output> {
   }
 
   const responseJson = await response.json();
-  const resourceId = responseJson.registry?.id;
+  const resourceId = responseJson.registry?.name;
 
   if (resourceId) {
     return {

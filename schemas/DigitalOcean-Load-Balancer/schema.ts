@@ -109,7 +109,6 @@ function main() {
                 .setDocumentation("Droplet ID")
                 .build()
         )
-        .setValidationFormat(Joi.array().items(Joi.number().integer()).default([]))
         .setDocumentation("An array containing the IDs of the Droplets assigned to the load balancer.")
         .build();
 

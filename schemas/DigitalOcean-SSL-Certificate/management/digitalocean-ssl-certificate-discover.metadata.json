@@ -1,5 +1,5 @@
 {
   "name": "digitalocean-ssl-certificate-discover",
-  "displayName": "Discover from DigitalOcean",
+  "displayName": "Discover on DigitalOcean",
   "description": "Discover all SSL certificates from DigitalOcean"
 }

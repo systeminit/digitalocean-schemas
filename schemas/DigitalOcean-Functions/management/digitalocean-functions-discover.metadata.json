@@ -1,5 +1,5 @@
 {
   "name": "digitalocean-functions-discover",
-  "displayName": "Discover from DigitalOcean",
+  "displayName": "Discover on DigitalOcean",
   "description": "Discover all functions namespaces from DigitalOcean"
 }

@@ -21,9 +21,9 @@ The `normalizeFsName` function replaces any character that isn't alphanumeric (A
 5. The discover function should be named `{resource}-discover` or `digitalocean-{resource}-discover`
 
 ### Examples:
-- If `name: "droplet-import"` ’ files: `droplet-import.metadata.json`, `droplet-import.ts`
-- If `name: "droplet-discover"` ’ files: `droplet-discover.metadata.json`, `droplet-discover.ts`
-- If `name: "sshkey-import"` ’ files: `sshkey-import.metadata.json`, `sshkey-import.ts`
+- If `name: "droplet-import"` files: `droplet-import.metadata.json`, `droplet-import.ts`
+- If `name: "droplet-discover"` files: `droplet-discover.metadata.json`, `droplet-discover.ts`
+- If `name: "sshkey-import"` files: `sshkey-import.metadata.json`, `sshkey-import.ts`
 
 **Note**: Spaces, special characters, and any non-alphanumeric characters (except `.`, `_`, `-`) are replaced with hyphens.
 
@@ -429,7 +429,7 @@ Extract the correct key from API responses:
 ```json
 {
   "name": "digitalocean-{resource}-discover",
-  "displayName": "Discover from DigitalOcean",
+  "displayName": "Discover on DigitalOcean",
   "description": "Discover all {resource_plural} from DigitalOcean"
 }
 ```

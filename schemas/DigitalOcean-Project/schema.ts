@@ -12,7 +12,6 @@ function main() {
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("text")
-            .setCreateOnly()
             .build())
         .setValidationFormat(Joi.string().required().max(175))
         .setDocumentation("The human-readable name for the project. The maximum length is 175 characters and the name must be unique.")
@@ -46,7 +45,6 @@ function main() {
             .addOption("Machine learning / AI / Data processing", "Machine learning / AI / Data processing")
             .addOption("IoT", "IoT")
             .addOption("Operational / Developer tooling", "Operational / Developer tooling")
-            .setCreateOnly()
             .build())
         .setValidationFormat(Joi.string().required().max(255))
         .setDocumentation("The purpose of the project. The maximum length is 255 characters. It can have one of the following values: Just trying out DigitalOcean, Class project / Educational purposes, Website or blog, Web Application, Service or API, Mobile Application, Machine learning / AI / Data processing, IoT, Operational / Developer tooling. If another value for purpose is specified, for example, 'your custom purpose', your purpose will be stored as 'Other: your custom purpose'.")
@@ -75,7 +73,6 @@ function main() {
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("text")
             .build())
-        .setValidationFormat(Joi.string().uuid())
         .setDocumentation("The unique universal identifier of this project.")
         .build();
 
@@ -139,6 +136,16 @@ function main() {
         .setDocumentation("If true, all resources will be added to this project if no project is specified.")
         .build();
 
+    const projectIdProp = new PropBuilder()
+        .setName("id")
+        .setKind("string")
+        .setHidden(false)
+        .setWidget(new PropWidgetDefinitionBuilder()
+            .setKind("text")
+            .build())
+        .setDocumentation("The ID of the project.")
+        .build();
+
     // Create the asset
     const asset = new AssetBuilder()
         .addProp(nameProp)
@@ -151,6 +158,7 @@ function main() {
         .addProp(createdAtProp)
         .addProp(updatedAtProp)
         .addProp(isDefaultProp)
+        .addResourceProp(projectIdProp)
         .addSecretProp(DOCredentialSecretProp)
         .build();
 

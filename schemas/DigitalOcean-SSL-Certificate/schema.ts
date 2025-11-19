@@ -12,6 +12,7 @@ function main() {
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("text")
+            .setCreateOnly()
             .build())
         .setValidationFormat(Joi.string().required().max(255))
         .setDocumentation("A unique human-readable name referring to a certificate.")
@@ -39,6 +40,7 @@ function main() {
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("array")
+            .setCreateOnly()
             .build())
         .setEntry(
             new PropBuilder()
@@ -49,9 +51,12 @@ function main() {
                 .build())
             .setValidationFormat(Joi.string().required())
             .setDocumentation("Fully qualified domain name (FQDN)")
+            .suggestSource({
+              schema: "DigitalOcean Domain",
+              prop: "/domain/name"
+            })
             .build()
         )
-        .setValidationFormat(Joi.array().items(Joi.string().required()).min(1))
         .setDocumentation("An array of fully qualified domain names (FQDNs) for which the certificate was issued. A certificate covering all subdomains can be issued using a wildcard (e.g. `*.example.com`).")
         .build();
 
@@ -114,7 +119,6 @@ function main() {
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("text")
             .build())
-        .setValidationFormat(Joi.string().pattern(/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){19}$/))
         .setDocumentation("A unique identifier generated from the SHA-1 fingerprint of the certificate.")
         .build();
 

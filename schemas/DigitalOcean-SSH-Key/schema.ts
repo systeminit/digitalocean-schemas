@@ -30,6 +30,11 @@ function main() {
         .setDocumentation("The entire public key string that was uploaded. Embedded into the root user's `authorized_keys` file if you include this key during Droplet creation.")
         .build();
 
+    const idProp = new PropBuilder()
+          .setName("id")
+          .setKind("string")
+          .build();
+
     const fingerprintProp = new PropBuilder()
           .setName("fingerprint")
           .setKind("string")
@@ -41,7 +46,8 @@ function main() {
         .addProp(nameProp)
         .addProp(publicKeyProp)
         .addSecretProp(DOCredentialSecretProp)
-      .addResourceProp(fingerprintProp)
+        .addResourceProp(idProp)
+        .addResourceProp(fingerprintProp)
         .build();
 
     return asset;

@@ -1,6 +1,9 @@
 async function main(component: Input): Promise < Output > {
     const payload = _.cloneDeep(component.domain);
 
+    // Remove create-only field
+    delete payload.project_id;
+
     // Fix region value - convert display text to API slugs
     const regionMap: Record < string, string > = {
         "Atlanta": "atl",

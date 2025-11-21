@@ -12,7 +12,6 @@ function main() {
         .setHidden(false)
         .setWidget(new PropWidgetDefinitionBuilder()
             .setKind("text")
-            .setCreateOnly()
             .build())
         .setValidationFormat(Joi.string().required().max(255).pattern(/^[a-zA-Z0-9]?[a-z0-9A-Z.\-]*[a-z0-9A-Z]$/))
         .setDocumentation("The display name that has been given to an image. This is what is shown in the control panel and is generally a descriptive title for the image in question.")

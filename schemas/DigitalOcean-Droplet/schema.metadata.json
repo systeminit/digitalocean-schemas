@@ -2,5 +2,6 @@
   "name": "DigitalOcean Droplet",
   "category": "DigitalOcean",
   "description": "Virtual Private Servers that can be used to run applications and host websites",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Droplets"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Droplets",
+  "color": "#0080FF"
 }

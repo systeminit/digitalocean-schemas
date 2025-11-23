@@ -2,5 +2,6 @@
   "name": "DigitalOcean VPC",
   "category": "DigitalOcean",
   "description": "Virtual Private Cloud that provides isolated network environments for your DigitalOcean resources",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/VPCs"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/VPCs",
+  "color": "#0080FF"
 }

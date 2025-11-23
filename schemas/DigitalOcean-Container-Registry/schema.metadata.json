@@ -2,5 +2,6 @@
   "name": "DigitalOcean Container Registry",
   "category": "DigitalOcean",
   "description": "Private Docker image registry for storing and managing container images with integrated security scanning and team management",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Container-Registry"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Container-Registry",
+  "color": "#0080FF"
 }

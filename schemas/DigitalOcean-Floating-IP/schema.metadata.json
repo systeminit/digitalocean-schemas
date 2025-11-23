@@ -2,5 +2,6 @@
   "name": "DigitalOcean Floating IP",
   "category": "DigitalOcean",
   "description": "Static IP addresses that can be assigned to Droplets and moved between them for high availability and failover scenarios",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Floating-IPs"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Floating-IPs",
+  "color": "#0080FF"
 }

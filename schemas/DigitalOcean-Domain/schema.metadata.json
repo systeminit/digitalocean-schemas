@@ -2,5 +2,6 @@
   "name": "DigitalOcean Domain",
   "category": "DigitalOcean",
   "description": "DNS domains that can be managed and configured with DNS records",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Domains"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Domains",
+  "color": "#0080FF"
 }

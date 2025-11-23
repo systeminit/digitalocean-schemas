@@ -2,5 +2,6 @@
   "name": "DigitalOcean Credential",
   "category": "DigitalOcean",
   "description": "API credentials for authenticating with DigitalOcean services",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#section/Authentication"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#section/Authentication",
+  "color": "#0080FF"
 }

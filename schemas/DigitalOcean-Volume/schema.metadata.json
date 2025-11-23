@@ -2,5 +2,6 @@
   "name": "DigitalOcean Volume",
   "category": "DigitalOcean",
   "description": "Block storage volumes that can be attached to Droplets to provide additional storage capacity",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Block-Storage"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Block-Storage",
+  "color": "#0080FF"
 }

@@ -2,5 +2,6 @@
   "name": "DigitalOcean Firewall",
   "category": "DigitalOcean",
   "description": "Cloud firewalls that provide the ability to restrict network access to and from a Droplet allowing you to define which ports will accept inbound or outbound connections",
-  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Firewalls"
+  "documentation": "https://docs.digitalocean.com/reference/api/api-reference/#tag/Firewalls",
+  "color": "#0080FF"
 }

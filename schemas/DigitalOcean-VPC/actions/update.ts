@@ -7,7 +7,7 @@ async function main(component: Input): Promise<Output> {
     };
   }
 
-  const codeString = component.properties.code?.["vpc-codegen"]?.code;
+  const codeString = component.properties.code?.["doCreate"]?.code;
   if (!codeString) {
     return {
       status: "error",

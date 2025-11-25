@@ -2,7 +2,6 @@ async function main(component: Input): Promise < Output > {
     const payload = _.cloneDeep(component.domain);
 
     // Remove read-only fields
-    delete payload.id;
     delete payload.owner_uuid;
     delete payload.owner_id;
     delete payload.created_at;

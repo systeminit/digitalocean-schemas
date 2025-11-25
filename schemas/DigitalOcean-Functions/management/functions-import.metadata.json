@@ -1,5 +1,0 @@
-{
-  "name": "functions-import",
-  "displayName": "Import from DigitalOcean",
-  "description": "Import a single functions namespace from DigitalOcean using its resource ID"
-}

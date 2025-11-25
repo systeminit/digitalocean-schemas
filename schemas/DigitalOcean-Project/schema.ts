@@ -65,17 +65,6 @@ function main() {
         .setDocumentation("The environment of the project's resources.")
         .build();
 
-    // ID property (read-only)
-    const idProp = new PropBuilder()
-        .setName("id")
-        .setKind("string")
-        .setHidden(true)
-        .setWidget(new PropWidgetDefinitionBuilder()
-            .setKind("text")
-            .build())
-        .setDocumentation("The unique universal identifier of this project.")
-        .build();
-
     // Owner UUID property (read-only)
     const ownerUuidProp = new PropBuilder()
         .setName("owner_uuid")
@@ -152,7 +141,6 @@ function main() {
         .addProp(descriptionProp)
         .addProp(purposeProp)
         .addProp(environmentProp)
-        .addProp(idProp)
         .addProp(ownerUuidProp)
         .addProp(ownerIdProp)
         .addProp(createdAtProp)

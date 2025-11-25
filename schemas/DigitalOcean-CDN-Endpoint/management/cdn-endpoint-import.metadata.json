@@ -1,5 +1,0 @@
-{
-  "name": "cdn-endpoint-import",
-  "displayName": "Import from DigitalOcean",
-  "description": "Import a single CDN endpoint from DigitalOcean using its resource ID"
-}

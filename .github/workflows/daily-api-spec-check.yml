@@ -91,6 +91,9 @@ jobs:
           # Create a response file for Claude Code to write to
           mkdir -p reports
 
+          ls -lah
+          ls .claude -lah
+          
           # Run Claude Code with the analysis prompt
           # Using --print flag for non-interactive output
           # Using --settings to load project permissions

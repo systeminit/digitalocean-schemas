@@ -93,6 +93,8 @@ jobs:
 
           # Run Claude Code with the analysis prompt
           # Using --non-interactive flag and piping the prompt
+          # Temporarily disable exit on error to capture the exit code
+          set +e
           claude --non-interactive > reports/api-diff-report.txt 2>&1 << 'EOF'
           digitalocean-api-spec.yaml is our current documentation. 'digitalocean-public.v2.new.yaml' is the new documentation we downloaded. Diff the two files and summarize the changes made to their api endpoints. Ignore any changes that do not modify API behaviour.
 
@@ -103,6 +105,7 @@ jobs:
 
           # Check the return code
           CLAUDE_EXIT_CODE=$?
+          set -e
 
           if [ $CLAUDE_EXIT_CODE -ne 0 ]; then
             echo "❌ ERROR: Claude command failed with exit code $CLAUDE_EXIT_CODE"
@@ -219,7 +222,7 @@ jobs:
         with:
           name: api-diff-report-${{ github.run_number }}
           path: reports/api-diff-report.txt
-          retention-days: 90
+          retention-days: 14
 
       - name: Cleanup
         if: always()

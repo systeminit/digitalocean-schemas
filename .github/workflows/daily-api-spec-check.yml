@@ -82,6 +82,29 @@ jobs:
 
           echo "✅ Successfully downloaded new API spec"
 
+      - name: Configure Claude Code permissions
+        run: |
+          echo "Creating Claude Code settings..."
+          mkdir -p .claude
+          cat > .claude/settings.json << 'EOF'
+          {
+            "permissions": {
+              "allow": [
+                "Bash(done)",
+                "Bash(mkdir:*)",
+                "Bash(si:*)",
+                "Bash(comm:*)",
+                "Bash(diff:*)"
+              ],
+              "deny": [
+                "Bash(*)"
+              ],
+              "ask": []
+            }
+          }
+          EOF
+          echo "✅ Claude Code settings configured"
+
       - name: Run Claude Code diff analysis
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -91,9 +114,6 @@ jobs:
           # Create a response file for Claude Code to write to
           mkdir -p reports
 
-          ls -lah
-          ls .claude -lah
-          
           # Run Claude Code with the analysis prompt
           # Using --print flag for non-interactive output
           # Using --settings to load project permissions

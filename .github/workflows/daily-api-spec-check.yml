@@ -87,17 +87,16 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "Running Claude Code analysis..."
-          pwd
-          ls -la
 
           # Create a response file for Claude Code to write to
           mkdir -p reports
 
           # Run Claude Code with the analysis prompt
-          # Using --non-interactive flag and piping the prompt
+          # Using --print flag for non-interactive output
+          # Using --settings to load project permissions
           # Temporarily disable exit on error to capture the exit code
           set +e
-          claude --non-interactive > reports/api-diff-report.txt 2>&1 << 'EOF'
+          claude --print --settings .claude/settings.json > reports/api-diff-report.txt 2>&1 << 'EOF'
           digitalocean-api-spec.yaml is our current documentation. 'digitalocean-public.v2.new.yaml' is the new documentation we downloaded. Diff the two files and summarize the changes made to their api endpoints. Ignore any changes that do not modify API behaviour.
 
           When you need to run diff or comm commands, please proceed without asking for confirmation.

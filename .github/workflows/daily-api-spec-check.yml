@@ -1,0 +1,189 @@
+name: Daily DigitalOcean API Spec Check
+
+on:
+  schedule:
+    # Run daily at 9:00 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  check-api-spec:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate required secrets
+        run: |
+          echo "Checking for required secrets..."
+          MISSING_SECRETS=()
+
+          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            MISSING_SECRETS+=("ANTHROPIC_API_KEY")
+          fi
+
+          if [ -z "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            MISSING_SECRETS+=("SLACK_WEBHOOK_URL")
+          fi
+
+          if [ ${#MISSING_SECRETS[@]} -gt 0 ]; then
+            echo "❌ ERROR: The following required secrets are not set in the GitHub repository:"
+            for secret in "${MISSING_SECRETS[@]}"; do
+              echo "  - $secret"
+            done
+            echo ""
+            echo "Please add these secrets in your repository settings:"
+            echo "Settings → Secrets and variables → Actions → New repository secret"
+            echo ""
+            echo "Required secrets:"
+            echo "  - ANTHROPIC_API_KEY: Your Anthropic API key for Claude Code"
+            echo "  - SLACK_WEBHOOK_URL: Your Slack webhook URL for posting notifications"
+            exit 1
+          fi
+
+          echo "✅ All required secrets are present"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        run: |
+          npm install -g @anthropic-ai/claude-code
+
+      - name: Download new DigitalOcean API spec
+        run: |
+          echo "Downloading latest DigitalOcean API spec..."
+          curl -f -o digitalocean-public.v2.new.yaml \
+            'https://api-engineering.nyc3.cdn.digitaloceanspaces.com/spec-ci/DigitalOcean-public.v2.yaml'
+
+          if [ ! -f digitalocean-public.v2.new.yaml ]; then
+            echo "❌ Failed to download API spec"
+            exit 1
+          fi
+
+          echo "✅ Successfully downloaded new API spec"
+
+      - name: Run Claude Code diff analysis
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          echo "Running Claude Code analysis..."
+
+          # Create a response file for Claude Code to write to
+          mkdir -p reports
+
+          # Run Claude Code with the analysis prompt
+          # Using --non-interactive flag and piping the prompt
+          claude-code --non-interactive << 'EOF' > reports/api-diff-report.txt 2>&1 || true
+digitalocean-api-spec.yaml in our current documentation. 'digitalocean-public.v2.new.yaml' is the new documentation we downloaded. Diff the two files and summarize the changes made to their api endpoints. Ignore any changes that do not modify API behaviour.
+
+When you need to run diff or comm commands, please proceed without asking for confirmation.
+
+Please provide a comprehensive summary of the changes at the end of your analysis.
+EOF
+
+          # Check if report was generated
+          if [ ! -f reports/api-diff-report.txt ]; then
+            echo "Creating fallback report..."
+            echo "API Spec Diff Report - $(date)" > reports/api-diff-report.txt
+            echo "======================================" >> reports/api-diff-report.txt
+            echo "" >> reports/api-diff-report.txt
+            echo "Claude Code analysis could not be completed." >> reports/api-diff-report.txt
+            echo "Please check the workflow logs for details." >> reports/api-diff-report.txt
+          fi
+
+          echo "✅ Analysis complete"
+
+      - name: Prepare Slack message
+        id: prepare_message
+        run: |
+          # Read the report
+          REPORT_CONTENT=$(cat reports/api-diff-report.txt)
+
+          # Truncate if too long (Slack has message limits)
+          MAX_LENGTH=3000
+          if [ ${#REPORT_CONTENT} -gt $MAX_LENGTH ]; then
+            REPORT_CONTENT="${REPORT_CONTENT:0:$MAX_LENGTH}... (truncated)"
+          fi
+
+          # Create JSON payload for Slack
+          # Escape special characters for JSON
+          REPORT_JSON=$(echo "$REPORT_CONTENT" | jq -Rs .)
+
+          cat > slack-payload.json << EOF
+{
+  "text": "📊 Daily DigitalOcean API Spec Check - $(date +%Y-%m-%d)",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "📊 DigitalOcean API Spec Changes"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Date:* $(date +%Y-%m-%d)\n*Repository:* ${{ github.repository }}\n*Workflow:* ${{ github.workflow }}"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Analysis Report:*\n\`\`\`\n$(echo $REPORT_JSON | jq -r .)\n\`\`\`"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "View full logs: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions Run>"
+        }
+      ]
+    }
+  ]
+}
+EOF
+
+          echo "✅ Slack message prepared"
+
+      - name: Post to Slack
+        run: |
+          echo "Posting report to Slack..."
+
+          HTTP_RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -X POST \
+            -H 'Content-type: application/json' \
+            --data @slack-payload.json \
+            "${{ secrets.SLACK_WEBHOOK_URL }}")
+
+          if [ "$HTTP_RESPONSE" -eq 200 ]; then
+            echo "✅ Successfully posted to Slack"
+          else
+            echo "❌ Failed to post to Slack (HTTP $HTTP_RESPONSE)"
+            cat response.txt
+            exit 1
+          fi
+
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-diff-report-${{ github.run_number }}
+          path: reports/api-diff-report.txt
+          retention-days: 90
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f slack-payload.json response.txt

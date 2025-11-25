@@ -79,13 +79,13 @@ jobs:
 
           # Run Claude Code with the analysis prompt
           # Using --non-interactive flag and piping the prompt
-          claude-code --non-interactive << 'EOF' > reports/api-diff-report.txt 2>&1 || true
-digitalocean-api-spec.yaml in our current documentation. 'digitalocean-public.v2.new.yaml' is the new documentation we downloaded. Diff the two files and summarize the changes made to their api endpoints. Ignore any changes that do not modify API behaviour.
+          claude-code --non-interactive > reports/api-diff-report.txt 2>&1 << 'EOF' || true
+          digitalocean-api-spec.yaml is our current documentation. 'digitalocean-public.v2.new.yaml' is the new documentation we downloaded. Diff the two files and summarize the changes made to their api endpoints. Ignore any changes that do not modify API behaviour.
 
-When you need to run diff or comm commands, please proceed without asking for confirmation.
+          When you need to run diff or comm commands, please proceed without asking for confirmation.
 
-Please provide a comprehensive summary of the changes at the end of your analysis.
-EOF
+          Please provide a comprehensive summary of the changes at the end of your analysis.
+          EOF
 
           # Check if report was generated
           if [ ! -f reports/api-diff-report.txt ]; then
@@ -116,45 +116,45 @@ EOF
           REPORT_JSON=$(echo "$REPORT_CONTENT" | jq -Rs .)
 
           cat > slack-payload.json << EOF
-{
-  "text": "📊 Daily DigitalOcean API Spec Check - $(date +%Y-%m-%d)",
-  "blocks": [
-    {
-      "type": "header",
-      "text": {
-        "type": "plain_text",
-        "text": "📊 DigitalOcean API Spec Changes"
-      }
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "*Date:* $(date +%Y-%m-%d)\n*Repository:* ${{ github.repository }}\n*Workflow:* ${{ github.workflow }}"
-      }
-    },
-    {
-      "type": "divider"
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "*Analysis Report:*\n\`\`\`\n$(echo $REPORT_JSON | jq -r .)\n\`\`\`"
-      }
-    },
-    {
-      "type": "context",
-      "elements": [
-        {
-          "type": "mrkdwn",
-          "text": "View full logs: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions Run>"
-        }
-      ]
-    }
-  ]
-}
-EOF
+          {
+            "text": "📊 Daily DigitalOcean API Spec Check - $(date +%Y-%m-%d)",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "📊 DigitalOcean API Spec Changes"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Date:* $(date +%Y-%m-%d)\n*Repository:* ${{ github.repository }}\n*Workflow:* ${{ github.workflow }}"
+                }
+              },
+              {
+                "type": "divider"
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Analysis Report:*\n\`\`\`\n$(echo $REPORT_JSON | jq -r .)\n\`\`\`"
+                }
+              },
+              {
+                "type": "context",
+                "elements": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "View full logs: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions Run>"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
 
           echo "✅ Slack message prepared"
 

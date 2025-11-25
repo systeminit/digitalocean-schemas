@@ -5,6 +5,15 @@ on:
     # Run daily at 9:00 AM UTC
     - cron: '0 9 * * *'
   workflow_dispatch: # Allow manual triggering
+    inputs:
+      print_to_console:
+        description: 'Print report to console instead of sending to Slack'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 jobs:
   check-api-spec:
@@ -20,8 +29,11 @@ jobs:
             MISSING_SECRETS+=("ANTHROPIC_API_KEY")
           fi
 
-          if [ -z "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
-            MISSING_SECRETS+=("SLACK_WEBHOOK_URL")
+          # Only check for Slack webhook if we're not printing to console
+          if [ "${{ github.event.inputs.print_to_console }}" != "true" ]; then
+            if [ -z "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+              MISSING_SECRETS+=("SLACK_WEBHOOK_URL")
+            fi
           fi
 
           if [ ${#MISSING_SECRETS[@]} -gt 0 ]; then
@@ -35,7 +47,9 @@ jobs:
             echo ""
             echo "Required secrets:"
             echo "  - ANTHROPIC_API_KEY: Your Anthropic API key for Claude Code"
-            echo "  - SLACK_WEBHOOK_URL: Your Slack webhook URL for posting notifications"
+            if [ "${{ github.event.inputs.print_to_console }}" != "true" ]; then
+              echo "  - SLACK_WEBHOOK_URL: Your Slack webhook URL for posting notifications"
+            fi
             exit 1
           fi
 
@@ -68,6 +82,43 @@ jobs:
 
           echo "✅ Successfully downloaded new API spec"
 
+      - name: Configure Claude Code permissions
+        run: |
+          echo "Creating Claude Code settings..."
+          mkdir -p .claude
+          cat > .claude/settings.json << 'EOF'
+          {
+            "permissions": {
+              "allow": [
+                "Bash(done)",
+                "Bash(mkdir:*)",
+                "Bash(si:*)",
+                "Bash(comm:*)",
+                "Bash(diff:*)"
+              ],
+              "deny": [
+                "Bash(*)"
+              ],
+              "ask": []
+            }
+          }
+          EOF
+          echo "✅ Claude Code settings configured"
+
+      - name: Random chance to continue
+        run: |
+          # Generate a random number between 0 and 99
+          RANDOM_NUM=$((RANDOM % 100))
+          echo "Random number: $RANDOM_NUM"
+
+          # 50% chance to continue (0-49 continue, 50-99 exit)
+          if [ $RANDOM_NUM -ge 50 ]; then
+            echo "🎲 Random chance failed (got $RANDOM_NUM, needed < 50). Exiting workflow."
+            exit 1
+          fi
+
+          echo "✅ Random chance passed (got $RANDOM_NUM). Continuing..."
+
       - name: Run Claude Code diff analysis
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -78,28 +129,54 @@ jobs:
           mkdir -p reports
 
           # Run Claude Code with the analysis prompt
-          # Using --non-interactive flag and piping the prompt
-          claude-code --non-interactive > reports/api-diff-report.txt 2>&1 << 'EOF' || true
-          digitalocean-api-spec.yaml is our current documentation. 'digitalocean-public.v2.new.yaml' is the new documentation we downloaded. Diff the two files and summarize the changes made to their api endpoints. Ignore any changes that do not modify API behaviour.
-
-          When you need to run diff or comm commands, please proceed without asking for confirmation.
-
-          Please provide a comprehensive summary of the changes at the end of your analysis.
+          # Using --print flag for non-interactive output
+          # Using --settings to load project permissions
+          # Temporarily disable exit on error to capture the exit code
+          set +e
+          claude --print --settings .claude/settings.json > reports/api-diff-report.txt 2>&1 << 'EOF'
+          Please give me a good morning message and tell me a short joke!
           EOF
 
-          # Check if report was generated
-          if [ ! -f reports/api-diff-report.txt ]; then
-            echo "Creating fallback report..."
+          # Check the return code
+          CLAUDE_EXIT_CODE=$?
+          set -e
+
+          if [ $CLAUDE_EXIT_CODE -ne 0 ]; then
+            cat reports/api-diff-report.txt
+            cat reports/api-diff-report.txt > reports/claude-code-error.txt
+            echo "❌ ERROR: Claude command failed with exit code $CLAUDE_EXIT_CODE"
+            echo "Creating error report..."
             echo "API Spec Diff Report - $(date)" > reports/api-diff-report.txt
             echo "======================================" >> reports/api-diff-report.txt
             echo "" >> reports/api-diff-report.txt
-            echo "Claude Code analysis could not be completed." >> reports/api-diff-report.txt
-            echo "Please check the workflow logs for details." >> reports/api-diff-report.txt
+            echo "Claude Code analysis failed with exit code: $CLAUDE_EXIT_CODE" >> reports/api-diff-report.txt
+            echo "Output:" >> reports/api-diff-report.txt
+            cat  reports/claude-code-error.txt >> reports/api-diff-report.txt
+            exit 1
+          fi
+
+          # Verify report was generated
+          if [ ! -f reports/api-diff-report.txt ] || [ ! -s reports/api-diff-report.txt ]; then
+            echo "❌ ERROR: Report file was not generated or is empty"
+            exit 1
           fi
 
           echo "✅ Analysis complete"
 
+      - name: Print report to console
+        if: ${{ github.event.inputs.print_to_console == 'true' }}
+        run: |
+          echo "=========================================="
+          echo "📊 DigitalOcean API Spec Diff Report"
+          echo "=========================================="
+          echo ""
+          cat reports/api-diff-report.txt
+          echo ""
+          echo "=========================================="
+          echo "✅ Report printed to console"
+
       - name: Prepare Slack message
+        if: ${{ github.event.inputs.print_to_console != 'true' }}
         id: prepare_message
         run: |
           # Read the report
@@ -159,6 +236,7 @@ jobs:
           echo "✅ Slack message prepared"
 
       - name: Post to Slack
+        if: ${{ github.event.inputs.print_to_console != 'true' }}
         run: |
           echo "Posting report to Slack..."
 
@@ -181,7 +259,7 @@ jobs:
         with:
           name: api-diff-report-${{ github.run_number }}
           path: reports/api-diff-report.txt
-          retention-days: 90
+          retention-days: 14
 
       - name: Cleanup
         if: always()

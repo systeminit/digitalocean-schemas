@@ -109,13 +109,15 @@ jobs:
 
           if [ $CLAUDE_EXIT_CODE -ne 0 ]; then
             cat reports/api-diff-report.txt
+            cat reports/api-diff-report.txt > reports/claude-code-error.txt
             echo "❌ ERROR: Claude command failed with exit code $CLAUDE_EXIT_CODE"
             echo "Creating error report..."
             echo "API Spec Diff Report - $(date)" > reports/api-diff-report.txt
             echo "======================================" >> reports/api-diff-report.txt
             echo "" >> reports/api-diff-report.txt
             echo "Claude Code analysis failed with exit code: $CLAUDE_EXIT_CODE" >> reports/api-diff-report.txt
-            echo "Please check the workflow logs for details." >> reports/api-diff-report.txt
+            echo "Output:" >> reports/api-diff-report.txt
+            cat  reports/claude-code-error.txt >> reports/api-diff-report.txt
             exit 1
           fi
 

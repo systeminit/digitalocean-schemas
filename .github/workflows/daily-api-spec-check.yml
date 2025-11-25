@@ -108,6 +108,7 @@ jobs:
           set -e
 
           if [ $CLAUDE_EXIT_CODE -ne 0 ]; then
+            cat reports/api-diff-report.txt
             echo "❌ ERROR: Claude command failed with exit code $CLAUDE_EXIT_CODE"
             echo "Creating error report..."
             echo "API Spec Diff Report - $(date)" > reports/api-diff-report.txt

@@ -87,6 +87,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "Running Claude Code analysis..."
+          pwd
+          ls -la
 
           # Create a response file for Claude Code to write to
           mkdir -p reports
